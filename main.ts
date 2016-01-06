@@ -169,7 +169,6 @@ function gitDiff(callback) {
             console.log('exec error: ' + JSON.stringify(err.message));
             if(err.message.includes(
               'This operation must be run in a work tree')) {
-              console.log('DELETING', key);
               delete result[key];
               return callback();
             }
