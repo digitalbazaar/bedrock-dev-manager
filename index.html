@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html ng-app='manageBedrock'>
+  <head>
+    <title>Bedrock Manager</title>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.4/angular-material.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="./styles.css">
+    <script>
+      'use strict';
+      const ipcRenderer = require('electron').ipcRenderer;
+      var _ = require('lodash');
+
+      var manageBedrock = angular.module('manageBedrock', ['ngMaterial'])
+        .filter('custom', function() {
+          return function(input, search) {
+            if (!input) return input;
+            if (!search) return input;
+            if(search.id === 1) return input;
+            var result = {};
+            angular.forEach(input, function(value, key) {
+              if (value.changed || value.behind) {
+                result[key] = value;
+              }
+            });
+            return result;
+          }
+        });
+      manageBedrock.controller('FirstController', function($scope, $mdDialog) {
+        $scope.directories = null;
+        ipcRenderer.on('directory-listing', function(arg, dirs) {
+          console.log('RECEIVING DIRECTORY LISTING', event, dirs);
+          $scope.directories = dirs;
+          $scope.$apply();
+        });
+        ipcRenderer.on('pull-results', function(event, arg) {
+          let alertText = arg.replace(/\n/g, "<br />");
+          let alert = $mdDialog.alert({
+            title: 'Pull Results',
+            content: alertText,
+            ok: 'Close'
+          });
+          $mdDialog
+            .show(alert)
+            .finally(function() {
+              alert = undefined;
+            });
+        });
+        ipcRenderer.on('update-repo', function(event, arg) {
+          _.assign($scope.directories[arg.repo], arg);
+          $scope.$apply();
+        });
+        $scope.repoFilter = 'all';
+        $scope.repoFilterOptions = [
+          {id: 1, name: 'all'},
+          {id: 2, name: 'attention needed'}
+        ];
+        $scope.repoFilter = {id: 1, name: 'all'};
+        $scope.refreshDirs = function() {
+          ipcRenderer.send('refresh-directories');
+        };
+        $scope.openEditor = function(dir) {
+          ipcRenderer.send('open-editor', dir);
+        };
+        $scope.openRepo = function(options) {
+          ipcRenderer.send('open-repo', options);
+        };
+        $scope.pullRepo = function(dir) {
+          ipcRenderer.send('pull-repo', dir);
+        };
+      });
+    </script>
+  </head>
+  <body ng-controller="FirstController" ng-cloak>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/0.11.4/angular-material.min.js"></script>
+    <!--
+    <h1>Hello World!</h1>
+    We are using node <script>document.write(process.versions.node)</script>,
+    Chrome <script>document.write(process.versions.chrome)</script>,
+    and Electron <script>document.write(process.versions.electron)</script>.
+    <input ng-model="myName"></input><br />
+    -->
+    <div layout="column" layout-fill>
+      <md-toolbar>
+        <div class="md-toolbar-tools">
+          <span>Bedrock Manager</span>
+          <span flex></span>
+          <md-select ng-model="repoFilter" ng-model-options="{trackBy: '$value.id'}" placeholder="show">
+            <md-option ng-value="option" ng-repeat="option in repoFilterOptions">{{ option.name }}</md-option>
+          </md-select>
+
+          <md-button ng-click="refreshDirs()"><md-icon>refresh</md-icon></md-button>
+        </div>
+      </md-toolbar>
+      <md-content>
+        <md-grid-list md-cols-sm="1" md-cols-md="2" md-cols-gt-md="9"
+          md-row-height="150px"
+          md-gutter="12px" md-gutter-gt-sm="8px" >
+          <md-grid-tile md-rowspan="1" md-colspan="1"
+            ng-repeat="directory in directories | custom: repoFilter | orderBy: 'name'"
+            ng-class="{green: !directory.changed && !directory.behind, yellow: directory.changed || directory.behind}">
+            <md-grid-tile-header>
+              <md-icon ng-if="directory.behind" class="pad-left-10" aria-label="behind">
+                sync_problem
+                <md-tooltip>behind origin</md-tooltip>
+              </md-icon>
+              <md-icon ng-if="directory.changed" class="pad-left-10" aria-label="uncommited changes">
+                code
+                <md-tooltip>uncommited changes</md-tooltip>
+              </md-icon>
+              <span style="text-align: right" class="pad-left-10" ng-bind="directory.branch"></span>
+            </md-grid-tile-header>
+            <h4 ng-bind="directory.name"></h4>
+            <md-grid-tile-footer >
+              <md-button class="md-icon-button" ng-click="openEditor(directory.name)"><md-icon>edit</md-icon></md-button>
+              <md-button class="md-icon-button" ng-click="openRepo({repo: directory.repoUrl, branch: directory.branch})">
+                <md-icon md-svg-src="images/GitHub-Mark.svg"></md-icon></md-button>
+              <md-button ng-if="directory.behind" ng-click="pullRepo(directory.name)"
+                class="md-icon-button"><md-icon>cloud_download</md-icon></md-button>
+            </md-grid-tile-footer>
+          </md-crid-tile>
+        </md-grid-list>
+      </md-content>
+    </div>
+  </body>
+</html>
