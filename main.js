@@ -10,6 +10,7 @@ var config = require('./config').config;
 var devDir = config.devDir;
 var devIgnore = ['node_modules', 'bower_components', 'configs'];
 const baseGitHubUrl = 'https://github.com/';
+console.log('CONFIG', config);
 require('crash-reporter').start();
 var mainWindow = null;
 app.on('window-all-closed', function () {
@@ -39,7 +40,7 @@ app.on('ready', function () {
     ipc.on('open-editor', function (event, dir) {
         let sys = require('sys');
         let exec = require('child_process').exec;
-        let child = exec('atom ' + path.join(devDir, dir), { cwd: path.join(devDir, dir) }, function (err, stdout, stderr) {
+        let child = exec(config.editor + ' ' + path.join(devDir, dir), { cwd: path.join(devDir, dir) }, function (err, stdout, stderr) {
         });
     });
     ipc.on('open-repo', function (event, options) {

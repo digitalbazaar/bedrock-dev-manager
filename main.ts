@@ -21,6 +21,8 @@ var devDir = config.devDir;
 var devIgnore = ['node_modules', 'bower_components', 'configs'];
 const baseGitHubUrl = 'https://github.com/';
 
+console.log('CONFIG', config);
+
 // Report crashes to our server.
 require('crash-reporter').start();
 
@@ -76,7 +78,7 @@ app.on('ready', function() {
     let sys = require('sys');
     let exec = require('child_process').exec;
     let child = exec(
-      'atom ' +  path.join(devDir, dir),
+      config.editor + ' ' + path.join(devDir, dir),
       {cwd: path.join(devDir, dir)},
       function(err, stdout, stderr) {
         // do nothing
