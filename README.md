@@ -4,6 +4,9 @@ got uncommited code, or if you're behind origin?
 
 Now you can!  With Bedrock Development Manager.
 
+## Screen Shot
+![screenshot](https://github.com/digitalbazaar/bedrock-dev-manager/blob/screenshots/screenshots/bedrock-development-manager-screenshot.png)
+
 ## Setup
 
 Download an Electron release [here](https://github.com/atom/electron/releases/).  And put the `electron` binary on your path.  Symlinks are OK.
