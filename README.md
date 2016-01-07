@@ -1,5 +1,5 @@
 ## Bedrock Development Manager
-Would you like to know what branch your bedrock modules are on and if you've
+Would you like to know what branch your bedrock modules are on, if you've
 got uncommited code, or if you're behind origin?
 
 Now you can!  With Bedrock Development Manager.
@@ -29,5 +29,5 @@ Click the refresh button in the upper right hand corner whenever you'd like to
 check for updates.
 * pencil: open the repo in your editor (only tested with atom)
 * github logo: open the repo in your browser to your current branch
-* indicators: will appear when you need to commit or your behind master (or both)
+* indicators: will appear when you need to commit or you're behind master (or both)
 * filter repos: using the drop down in the upper right hand corner
