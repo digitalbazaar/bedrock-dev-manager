@@ -9,8 +9,6 @@ Now you can!  With Bedrock Development Manager.
 
 ## Setup
 
-Download an Electron release [here](https://github.com/atom/electron/releases/).  And put the `electron` binary on your path.  Symlinks are OK.
-
 Clone this repo into your `bedrock-dev` folder:
 ```
 cd bedrock-dev
