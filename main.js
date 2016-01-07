@@ -128,6 +128,13 @@ function gitDiff(callback) {
                         if (branchName) {
                             directory.branch = branchName[1].trim();
                         }
+                        // ignore lines that start with '??'; these indicate
+                        // that there are untracked files which is different
+                        // from uncommitted (we may want to also capture this
+                        // status as different from `clean`)
+                        lines = lines.filter(line => {
+                            return line.indexOf('??') !== 0;
+                        });
                         if (lines.length > 2) {
                             directory.changed = true;
                         }
