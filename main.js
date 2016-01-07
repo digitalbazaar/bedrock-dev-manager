@@ -108,10 +108,11 @@ function gitDiff(callback) {
         },
         function (result, callback) {
             async.forEachOf(result, function (directory, key, callback) {
-                let child = exec('git fetch -q --all && git status -b --porcelain', { cwd: path.join(devDir, directory.name) }, function (err, stdout, stderr) {
+                let cwd = path.join(devDir, directory.name);
+                let child = exec('git fetch -q --all && git status -b --porcelain', { cwd: cwd }, function (err, stdout, stderr) {
                     directory.changed = false;
                     if (err !== null) {
-                        console.log('exec error: ' + JSON.stringify(err.message));
+                        console.log('exec error in directory ' + cwd + ', error: ' + JSON.stringify(err.message));
                         if (err.message.includes('This operation must be run in a work tree')) {
                             delete result[key];
                             return callback();
