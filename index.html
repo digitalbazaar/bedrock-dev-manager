@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app='manageBedrock'>
+<html ng-app="manageBedrock">
   <head>
     <title>Bedrock Manager</title>
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
@@ -16,17 +16,17 @@
       var manageBedrock = angular.module('manageBedrock', ['ngMaterial'])
         .filter('custom', function() {
           return function(input, search) {
-            if (!input) return input;
-            if (!search) return input;
-            if(search.id === 1) return input;
+            if(!input) {return input;}
+            if(!search) {return input;}
+            if(search.id === 1) {return input;}
             var result = {};
             angular.forEach(input, function(value, key) {
-              if (value.changed || value.behind) {
+              if(value.changed || value.behind) {
                 result[key] = value;
               }
             });
             return result;
-          }
+          };
         });
       manageBedrock.controller('FirstController', function($scope, $mdDialog) {
         $scope.directories = null;
@@ -122,7 +122,7 @@
               <md-button ng-if="directory.behind" ng-click="pullRepo(directory.name)"
                 class="md-icon-button"><md-icon>cloud_download</md-icon></md-button>
             </md-grid-tile-footer>
-          </md-crid-tile>
+          </md-grid-tile>
         </md-grid-list>
       </md-content>
     </div>
