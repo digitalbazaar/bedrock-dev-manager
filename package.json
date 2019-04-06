@@ -26,6 +26,6 @@
     "async": "^1.5.0",
     "electron-prebuilt": "^0.37.6",
     "lodash": "^3.10.1",
-    "open": "0.0.5"
+    "open": "6.0.0"
   }
 }
